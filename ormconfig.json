@@ -6,7 +6,7 @@
   "password" : "docker",
   "database" :  "gobarber",
   "entities": [
-    "./src/models/*ts.ts"
+    "./src/models/*.ts"
   ],
   "migrations" : [
     "./src/database/migrations/*.ts"
