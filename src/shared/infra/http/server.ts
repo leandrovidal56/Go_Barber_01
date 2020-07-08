@@ -1,11 +1,11 @@
 import 'reflect-metadata';
 import express, { Request, Response, NextFunction } from 'express';
 import 'express-async-errors';
-import AppError from './erros/AppError';
+import AppError from '../../erros/AppError';
 import routes from './routes';
-import uploadConfig from './config/upload';
+import uploadConfig from '../../../config/upload';
 
-import './database';
+import '../typeorm';
 
 const app = express();
 
@@ -28,4 +28,5 @@ app.use(
     });
   },
 );
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 app.listen(3333, () => {});
