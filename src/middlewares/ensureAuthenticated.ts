@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';
 import authConfig from '../config/auth';
+import AppError from '../erros/AppError';
 
 interface TokenPayload {
   iat: number;
@@ -15,7 +16,7 @@ export default function EnsureAuthenticated(
 ): void {
   const authHeader = request.headers.authorization;
   if (!authHeader) {
-    throw new Error('token not exists');
+    throw new AppError('token not exists', 401);
   }
   const [, token] = authHeader.split(' ');
 
@@ -26,6 +27,6 @@ export default function EnsureAuthenticated(
     request.user = { id: sub };
     return next();
   } catch (error) {
-    throw new Error('token is invalid');
+    throw new AppError('token is invalid', 401);
   }
 }
