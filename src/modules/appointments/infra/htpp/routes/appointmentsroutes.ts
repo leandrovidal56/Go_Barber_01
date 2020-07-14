@@ -1,8 +1,7 @@
 import { Router } from 'express';
 import { startOfHour, parseISO } from 'date-fns';
-
+import { container } from 'tsyringe';
 import EnsureAuthenticated from '@modules/users/infra/htpp/middlewares/ensureAuthenticated';
-import AppointmentsRepository from '@modules/appointments/infra/typeorm/repositories/AppointmentsRepository';
 import CreateAppointmentService from '@modules/appointments/services/createAppointmentService';
 
 const appointmentsRouter = Router();
@@ -17,12 +16,8 @@ appointmentsRouter.use(EnsureAuthenticated);
 appointmentsRouter.post('/', async (request, response) => {
   const { provider_id, date } = request.body;
 
-  const appointmentsRepository = new AppointmentsRepository();
-
   const parsedDate = startOfHour(parseISO(date));
-  const createAppointment = new CreateAppointmentService(
-    appointmentsRepository,
-  );
+  const createAppointment = container.resolve(CreateAppointmentService);
 
   const appointment = await createAppointment.execute({
     date: parsedDate,
