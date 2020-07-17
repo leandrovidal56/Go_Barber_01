@@ -1,9 +1,9 @@
-import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { inject, injectable } from 'tsyringe';
 import User from '@modules/users/infra/typeorm/entities/User';
 import Auth from '@config/auth';
 import AppError from '@shared/erros/AppError';
+import IHashProvider from '../providers/hashProvider/models/IHashProvider';
 
 import IUsersRepository from '../repositories/IUsersRepository';
 
@@ -20,6 +20,7 @@ interface IResponse {
 class AuthenticateUserService {
   constructor(
     @inject('UsersRepository') private usersRepository: IUsersRepository,
+    @inject('IHashProvider') private iHashProvider: IHashProvider,
   ) {}
 
   public async execute({ email, password }: IRequest): Promise<IResponse> {
@@ -28,7 +29,10 @@ class AuthenticateUserService {
     if (!user) {
       throw new AppError('email ou senha não conferem', 401);
     }
-    const passwordMatch = await compare(password, user.password);
+    const passwordMatch = await this.iHashProvider.compareHash(
+      password,
+      user.password,
+    );
     if (!passwordMatch) {
       throw new AppError('email ou senha não conferem', 401);
     }
