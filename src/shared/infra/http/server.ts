@@ -1,8 +1,12 @@
 import 'reflect-metadata';
 import express, { Request, Response, NextFunction } from 'express';
 import 'express-async-errors';
-import uploadConfig from '@config/upload';
-import AppError from '@shared/erros/AppError';
+// import uploadConfig from '@config/upload';
+
+import uploadConfig from '../../../config/upload';
+
+import AppError from '../../erros/AppError';
+// import AppError from '@shared/erros/AppError';
 import routes from './routes';
 
 import '../typeorm';
@@ -11,7 +15,8 @@ import '@shared/container';
 const app = express();
 
 app.use(express.json());
-app.use('/files', express.static(uploadConfig.directory));
+// app.use('/files', express.static(uploadConfig.directory));
+app.use('/files', express.static(uploadConfig.tmpFolder));
 app.use(routes);
 app.use(
   (err: Error, resquest: Request, response: Response, _: NextFunction) => {
